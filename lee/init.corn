@@ -1,0 +1,11 @@
+#!/bin/bash
+sudo cat > /tmp/chenlianghong.cron <<EOF
+# 备份安装的软件包，方便没网络重装软件时需要
+0,30 * * * * bash ~/WORK/bak.apt-get.cache.sh
+
+EOF
+crontab -u chenlianghong /tmp/chenlianghong.cron
+sudo cat /var/spool/cron/crontabs/chenlianghong
+
+# curl -s https://get.docker.io/ubuntu/ | sudo sh
+# 0 12 * * * bash ~/WORK/update.gits.sh
