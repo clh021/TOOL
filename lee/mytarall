@@ -1,0 +1,20 @@
+#!/bin/bash
+function mytar()
+{
+    prefix=$(date +%Y%m%d_%H%M%S)
+    # tar -zcpf $prefix.$args.tar.gz  $args
+    # cd $1
+    prefix=$(date +%Y%m%d_%H%M%S)
+    for args in $@
+    do
+        echo "$(date +%Y-%m-%d_%H:%M:%S) $args"
+        tar -zcpf $prefix.$args.tar.gz  $args
+        # echo "tar -zcpf $(date +%Y-%m-%d_%H:%M:%S).$args.tar.gz  $args"
+    done
+}
+
+
+for shname in `ls $1`
+do
+    mytar $shname
+done

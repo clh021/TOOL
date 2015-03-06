@@ -1,0 +1,8 @@
+#!/bin/bash
+prefix=$(date +%Y%m%d_%H%M%S)
+for args in $@
+do
+    echo "$(date +%Y-%m-%d_%H:%M:%S) $args"
+    tar -zcpf $prefix.$args.tar.gz  $args
+done
+# mytar folder1 [folder2 [folder3 ...]]

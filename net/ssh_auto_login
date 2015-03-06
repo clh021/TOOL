@@ -1,0 +1,52 @@
+#!/usr/bin/expect
+##
+#	ssh模拟登陆器
+#
+#	@author zhiyuan <hzyhouzhiyuan艾特gmail.com>
+##
+if {$argc<4} {
+	puts "Error params: $argv"
+	puts "Expect params ：user passwd ip port [translate_id]"
+	exit 1
+}
+
+set default_passcode "这里填通道机的默认密码"
+
+set user [lindex $argv 0]
+set password [lindex $argv 1]
+set ip [lindex $argv 2]
+set port [lindex $argv 3]
+set timeout 10
+
+while 1 {
+	spawn ssh -p $port $user@$ip
+	#如果最后的字符匹配则执行命令\r结尾表示确定
+	expect {
+		"*yes/no" { send "yes\r";exp_continue}
+		"*password:" { send "$password\r" }
+	}
+        #这里是需要通过通道机登陆时的匹配流程，根据需要自行修改。
+	expect {
+		"*PASSCODE:" {
+			send_user "请输入通道机动态密码:";
+			expect_user -re "(.*)\n"
+			set random_passcode $expect_out(1,string)
+			send "$default_passcode$random_passcode\r"
+			expect {
+				"Access Denied" { continue }
+				"Enter:" { send "1\r" }
+			}
+			set translate_ip [lindex $argv 4]
+			if { $translate_ip != "" } {
+				expect "*):" { send "$translate_ip\r" }
+			}
+		}
+		#"Last login:*" { }
+	}
+	break
+}
+#无法匹配$,还不知道怎么解决
+#expect -re "*\$" { puts "test123"; send "source /etc/profile\r" }
+#expect "*\$" { send "cd ~\r" }
+send_user "login success!"
+interact

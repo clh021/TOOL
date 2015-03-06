@@ -1,0 +1,37 @@
+#!/bin/sh
+##
+#	服务器登陆器
+#
+#	@author zhiyuan <hzyhouzhiyuan@gmail.com>
+##
+channel_user="root"
+channel_passwd="xxxx"
+#内网通道机
+internal_ip1=xxx.xxx.xxx.xxx
+#联通
+unicom_ip1=xxx.xxx.xxx.xxx
+#电信
+telecom_ip1=xxx.xxx.xxx.xxx
+case "$1" in
+	ci)
+		expect ssh_auto_login $channel_user $channel_passwd $internal_ip3 22
+		;;
+	cl)
+		expect ssh_auto_login $channel_user $channel_passwd $unicom_ip1 22
+		;;
+	cd)
+		expect ssh_auto_login $channel_user $channel_passwd $telecom_ip1 22
+		;;
+	149)
+		expect ssh_auto_login channel_user channel_passwd xxx.xx.xxx.xxx 22
+		;;
+	49)
+		expect ssh_auto_login $channel_user $channel_passwd $unicom_ip1 22 需要通道机跳转的ipxxx.xxx.xx
+		;;
+	*)
+		echo "帮助信息："
+		echo "\tthere is not a server named [$1]"
+		echo "\t服务器149：\t149"
+		echo "\t服务器49:\t49"
+		;;
+esac

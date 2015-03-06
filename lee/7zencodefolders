@@ -1,0 +1,7 @@
+#!/bin/bash
+ls -F | grep '/$' | awk -F '/'  '{print $1"/ >> "$1".tar.gz"}' | xargs -n2 tar czvf
+
+
+$(date +%Y%m%d_%H%M%S)
+ls -F | grep '/$' | awk -F '/'  '{print $1"/ >> "$(date +%Y%m%d_%H%M%S)$1".tar.gz"}' | xargs -n2 tar czvf
+ls -F | grep '/$' | awk -F '/'  '{print strftime("%Y%m%d_%H%M%S")$1".tar.gz"}''{print $1"/"}' | xargs -n2 tar czvf

@@ -1,0 +1,19 @@
+#!/bin/bash
+# crontab -e 57 7-22 * * * /home/nemo/crontab/time08_23.bash
+DB_USER="root"
+DB_PASS="***"
+DB_HOST="localhost"
+DB_PORT="3306"
+# Others vars
+BIN_DIR="/usr/bin"
+# TODO
+# 获得8080端口
+THETIME=`netstat -ant | grep 8080 | wc -l`
+# 获得当前小时
+THEHOUR=`date +%H`
+
+# 更新当前小时的现在人数
+$BIN_DIR/mysql -u$DB_USER -p$DB_PASS -h$DB_HOST -P$DB_PORT << EOF
+use wapgame4sky2;
+UPDATE MgrSky SET time$THEHOUR = $THETIME WHERE TO_DAYS(date) = TO_DAYS(now());
+EOF

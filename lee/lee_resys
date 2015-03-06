@@ -1,0 +1,124 @@
+#!/bin/bash
+# Copyright (C) By clh021@gmail.com
+e(){
+	case $1 in
+		'red')
+			echo -e "\033[31m$2\033[0m"
+	    	;;
+	  	*)
+	    	echo "$2"
+	esac
+}
+
+echousage(){
+	echo "
+Select the number corresponding to the menu, or use the following way
+eg：'lee back_mysql database_name'
+"
+}
+back_website(){
+	echo '将备份网站到 /green/ 目录，请输入您要备份的网站目录名'
+	read website
+	echo "(高级用户功能)指定其他需要排除的文件/目录, 一行写一个。以空行结束。"
+	read ex
+	while [ "$ex" != "" ]; do
+	ex=`dequotepath "$ex"`
+	[ "${ex#/}" = "$ex" ] && { echo "请使用绝对路径"; read ex; continue; }
+	[ -e "$ex" ] || { echo "$ex 并不存在"; read ex; continue; }
+	ex="${ex#/}"
+	echo $ex >> $exclude
+	read ex
+	done
+	lastfix=$(date +%Y%m%d_%H%M%S)
+	echo '请输入网站对应的数据库名：[无数据库或不备份 直接回车]'
+	read mysql
+	if [ "$mysql" != '' ]; then
+		echo -e "正在导出数据库到/green/$mysql.$lastfix.sql ..."
+		mysqldump -uroot -proot $mysql > /green/$mysql.$lastfix.sql
+		#mysql -u用户名 -p 数据库名 < 数据库名.sql
+		echo -e "导出数据库 $mysql 完成！"
+		echo -e "开始压缩数据库到/var/www/$website/$mysql.$lastfix.sql.7z ..."
+		7z a -t7z -r /var/www/$website/$mysql.$lastfix.sql.7z /green/$mysql.$lastfix.sql
+		echo "已备份至 /green/$mysql.$lastfix.sql 。"
+		echo "压缩为 /green/$mysql.$lastfix.sql.7z"
+	fi;
+	stime=`date`
+	echo -e "正在导出数据库到/green/$mysql.$lastfix.sql ..."
+	# tar -cvzpf /green/$website.web.$(date +%Y.%m.%d_%H.%M.%S).tar.gz /green/$website $exclude
+	7z a -t7z -r /green/$website.web.$lastfix.7z /var/www/$website $exclude
+	echo "已备份至 /green/$website.web.$lastfix.7z 。"
+	echo -e "开始于: $stime\n结束于: `date`"
+}
+
+back_home(){
+	stime=`date`
+	sudo rm -fr ~/.cache/
+	sudo 7z a -t7z -r /green/home.$(date +%Y%m%d%H%M%S).7z  ~
+	echo 'Done!'
+}
+
+show_menu(){
+	echo "
+==============[ Lianghong Tools v0.1 ]=================
+1,back_home    2,re-apache        3,re-mysql
+4,start-lamp  	5,stop"
+	read class
+	if [ "$class" = "" ]; then
+		exit 0;
+	elif [ "$class" = "0" ]; then
+		init_sys;
+	elif [ "$class" = "1" ]; then
+		back_home;
+	elif [ "$class" = "2" ]; then
+		back_sys;
+	elif [ "$class" = "3" ]; then
+		re_sys;
+	elif [ "$class" = "4" ]; then
+		new_app;
+	elif [ "$class" = "5" ]; then
+		stop_work;
+	elif [ "$class" = "6" ]; then
+		start_work;
+	elif [ "$class" = "7" ]; then
+		clean_sys;
+	elif [ "$class" = "8" ]; then
+		many_rename;
+	elif [ "$class" = "9" ]; then
+		find_files;
+	elif [ "$class" = "10" ]; then
+		re_mysql;
+	else
+		echo '您输入的选项不存在'
+	fi
+	show_menu;
+}
+
+analy_param(){
+	case $1 in
+	  '-h' | '-help' | '--help' )
+	       echousage
+	       ;;
+	  'back_mysql' | 'back_website' | 'back_sys' | 'clean_sys' | 'stop_work' | 'start_work' | 're_website' | 're_sys' | 'ssh_conn' )
+	       $1
+	       ;;
+	  *)
+	       echo "很抱歉，此脚本目前还不能分析出你的参数指令"
+	       echousage
+	esac
+	show_menu;
+}
+
+# echo -e "\033[32;49;1m [DONE] \033[39;49;0m"
+# echo -e "\e[32;49;1m [DONE] \033[39;49;0m"
+
+# ready
+lang='cn'
+today=`date +%Y%m%d%H%M`
+version="V2.3, 2013年3月7日"
+
+#begin working
+if [ "$1" != "" ]; then
+	analy_param $1 $2 $3 $4 $5;
+else
+	show_menu;
+fi

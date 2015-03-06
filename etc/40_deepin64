@@ -1,0 +1,12 @@
+#!/bin/sh
+exec tail -n +3 $0
+# This file provides an easy way to add custom menu entries.  Simply type the
+# menu entries you want to add after this comment.  Be careful not to change
+# the 'exec tail' line above.
+menuentry "install isos/deepin-amd64"{
+	set root='(hd0,2)'
+	search --no-floppy --fs-uuid --set=root 5b127df2-6786-4402-8582-060465abc662
+	loopback loop /ISOS/deepin-desktop-amd64.iso/deepin-desktop-amd64.iso
+	linux (loop)/casper/vmlinuz boot=casper iso-scan/filename=/ISOS/deepin-desktop-amd64.iso/deepin-desktop-amd64.iso quiet splash locale=en_US bootkbd=us console-setup/layoutcode=us noeject --
+	initrd (loop)/casper/initrd.lz
+}
