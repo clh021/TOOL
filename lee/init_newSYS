@@ -75,6 +75,7 @@ sudo sed -i '$acomplete -F _docker docker' /etc/bash_completion.d/docker.io
 # php artisan db:seed
 # composer dump-autoload
 # php artisan migrate --package=cartalyst/sentry
+sudo docker run --rm -i -t -p 80:80 -p 3306:3306 -v /media/chenlianghong/DATA/important/WORK/home.chenlianghong:/home/chenlianghong -v /media/chenlianghong/DATA/important/WORK/app:/app -v /media/chenlianghong/DATA/important/WORK/mysqldb:/var/lib/mysql -e MYSQL_PASS="admin" leehom/lamp
 
 sudo docker run --rm -i -t -p 80:80 -p 3306:3306 -v ~/WORK/home.chenlianghong:/home/chenlianghong -v ~/WORK/app:/app -v ~/WORK/app/deepin-officialwebsite.conf:/etc/apache2/sites-enabled/deepin-officialwebsite.conf -v ~/WORK/mysqldb:/var/lib/mysql -v ~/WORK:/home/chenlianghong/WORK -e MYSQL_PASS="admin" leehom/lamp
 # prefix=$(date +%Y%m%d_%H%M%S)
@@ -112,3 +113,5 @@ sudo docker run --rm -i -t -p 80:80 -p 3306:3306 -v ~/WORK/home.chenlianghong:/h
 # # curl -s https://get.docker.io/ubuntu/ | sudo sh
 # # 0 12 * * * bash ~/WORK/update.gits.sh
 # ----------------------------------------------------
+
+
